@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+    <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8DwQMAAFAbQIOMhQIiIAwQAAAABJRU5ErkJggg==" />
+    <link rel="stylesheet" href="../系统/CSS/style.css">
+    <title>设置</title>
+    <style>
+        .outer-container {
+            width: 500px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: auto;
+            padding: 0;
+        }
+
+        .container p {
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .container>* {
+            margin-bottom: 1rem;
+        }
+
+        .container h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        #nameText {
+            height: 30px;
+            border-radius: 5px;
+        }
+
+        #Version {
+            font-weight: bold;
+        }
+
+        .container input[type="file"],
+        .container input[type="submit"],
+        .container button[type="submit"],
+        .container button {
+            padding: 0.5rem 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .container input[type="file"]:hover,
+        .container input[type="submit"]:hover,
+        .container button[type="submit"]:hover,
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+        .container input[type="file"]:disabled,
+        .container input[type="submit"]:disabled,
+        .container button[type="submit"]:disabled,
+        .container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            color: #666;
+        }
+
+        .container input[type="file"]:active,
+        .container input[type="submit"]:active,
+        .container button:active {
+            transform: scale(0.98);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .progressBar {
+            height: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progressBar::-webkit-progressBar {
+            background-color: #eee;
+            border-radius: 10px;
+        }
+
+        .progressBar::-webkit-progress-value {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .containeother {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .containeother select {
+            width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .upload-section,
+        .upload-section2 {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            margin-bottom: 0px;
+        }
+
+        .upload-section2 button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            margin-top: 17px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="outer-container">
+        <div class="container">
+            <h2>默认主页：</h2>
+            <div class="containeother" style="display:flex; justify-content: space-between;">
+                <div>
+                    <select id="firstWeb" name="firstWeb"></select>
+                </div>
+                <button onclick="FirstWeb()">提交</button>
+            </div>
+            <div class="upload-section">
+                <form action="/upload" id="upload_form_avatar" enctype="multipart/form-data" method="post">
+                    <label for="fileUploadAvatar">头像:</label>
+                    <input type="file" name="file1" id="file1">
+                    <br>
+                    <progress id="progressBarAvatar" value="0" max="100" style="width:300px;display:none;"></progress>
+                </form>
+                <button type="button" onclick="uploadFile('file1')">提交头像</button>
+            </div>
+            <div class="upload-section2">
+                <form action="/upload" id="upload_form_wallpaper" enctype="multipart/form-data" method="post">
+                    <br><label for="fileUploadWallpaper">壁纸:</label>
+                    <input type="file" name="file2" id="file2">
+                    <br>
+                    <progress id="progressBarWallpaper" value="0" max="100"
+                        style="width:300px;display:none;"></progress>
+                </form>
+                <button type="button" onclick="uploadFile('file2')">提交壁纸</button>
+            </div>
+            <p>（头像和壁纸请使用webp格式）</p>
+            <h2>系统固件更新</h2>
+            <p id="Version">当前版本：</p>
+            <script src="../系统/JS/jquery-3.6.0.js"></script>
+            <form method='POST' action='#' enctype='multipart/form-data' id='OTAupload_form'>
+                <input type='file' name='update' id="firmwareFileInput">
+                <input type='submit' value='上传固件' id="firmwareSubmitBtn">
+            </form>
+            <div id='prg'>上传进度: 0%</div>
+            <script>
+                $('form').submit(function (e) {
+                    e.preventDefault();
+                    var form = $('#OTAupload_form')[0];
+                    var data = new FormData(form);
+                    $.ajax({
+                        url: '/update',
+                        type: 'POST',
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        xhr: function () {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.onreadystatechange = function () {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    window.location.href = "/";
+                                }
+                            };
+                            xhr.upload.addEventListener('progress', function (evt) {
+                                if (evt.lengthComputable) {
+                                    var per = evt.loaded / evt.total;
+                                    $('#prg').html('上传进度: ' + Math.round(per * 100) + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        success: function (d, s) {
+                            console.log('成功!')
+                            alert("更新成功，请重启");
+                        },
+                        error: function (a, b, c) {
+                            console.log('失败!')
+                            alert("更新失败，请重试");
+                        }
+                    });
+                });
+            </script><SMALL>(系统固件上传切记不要关闭电源)</SMALL>
+            <h2>域名前缀：</h2>
+            <form id="nameForm" action="/nameText">
+                <input name="nameText" type="text" id="nameText" value=""> <input type="submit" value="保存（重启后生效）" />
+            </form>
+            <h2 style="display: inline-block;">网络提供：</h2>
+            <span class="text" id="connectwifi" style="display: inline-block;"></span>
+            <br />
+            <h2 style="display: inline-block;">设备IP：</h2>
+            <span class="text" id="ip" style="display: inline-block;"></span>
+            <p><button id="testFileIOBtn">测试设备读写性能</button></p>
+        </div>
+    </div>
+</body>
+<script>
+    function changeText(value) {
+        var p = document.getElementById("Version");
+        p.textContent = "当前版本：" + value;
+    }
+    function nameText() {
+        fetch('/get_version')
+            .then(response => response.json())
+            .then(data => {
+                changeText(data.version);
+                document.getElementById('nameText').value = data.text;
+                document.getElementById('firstWeb').value = data.FirstWebis;
+                document.getElementById('ip').innerText = data.IPAD;
+                document.getElementById('connectwifi').innerText = data.WIFI;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    function uploadFile(fileInputId) {
+        var fileElement = document.getElementById(fileInputId);
+        var file = fileElement.files[0];
+        var formdata = new FormData();
+
+        if (file) {
+            var fileName = fileInputId === 'file1' ? '头像.jpg' : '背景.jpg';
+            formdata.append(fileInputId, file, fileName);
+        } else {
+            alert("请选择一个文件");
+            return;
+        }
+
+        var ajax = new XMLHttpRequest();
+        ajax.addEventListener("load", completeHandler, false);
+        ajax.addEventListener("error", errorHandler, false);
+        ajax.addEventListener("abort", abortHandler, false);
+        ajax.open("POST", "/set");
+        ajax.send(formdata);
+    }
+    function completeHandler(event) {
+        alert("上传完成");
+        location.reload()
+    }
+    function errorHandler(event) {
+        alert("上传失败");
+    }
+    function abortHandler(event) {
+        alert("上传中断");
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var selectElement = document.getElementById('firstWeb');
+
+        var optionsData = [
+            { value: '1', text: '文件总管理' },
+            { value: '2', text: '文件快传' },
+            { value: '3', text: '音乐播放' },
+            { value: '4', text: '网页游戏' },
+            { value: '5', text: '私人影院' },
+            { value: '6', text: '剪切板' },
+            { value: '7', text: '设置' },
+            { value: '8', text: '网络配置' },
+            { value: '9', text: 'HaOs游戏平台' }
+        ];
+
+        optionsData.forEach(function (option) {
+            var newOption = document.createElement('option');
+            newOption.value = option.value;
+            newOption.text = option.text;
+            selectElement.appendChild(newOption);
+        });
+    });
+    function FirstWeb() {
+        var selectedOption = document.getElementById('firstWeb').value;
+        var urltocall = "/FirstWeb?FirstWebis=" + selectedOption;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                nameText();
+                alert("操作成功！");
+            }
+        };
+        xmlhttp.open("GET", urltocall, false);
+        xmlhttp.send();
+    }
+    document.getElementById("testFileIOBtn").addEventListener("click", function () {
+        fetch('/testFileIO', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const bytesPerMsToBytesPerSec = 1000;
+                const bytesToMegaBytes = 1 / (1024 * 1024);
+
+                const writeSpeedBytes = data.writtenBytes / (data.writeTime / bytesPerMsToBytesPerSec);
+                const readSpeedBytes = data.readBytes / (data.readTime / bytesPerMsToBytesPerSec);
+                const writeSpeedMB = writeSpeedBytes * bytesToMegaBytes;
+                const readSpeedMB = readSpeedBytes * bytesToMegaBytes;
+
+                let message = `写入字节数: ${data.writtenBytes}, 写入时间: ${data.writeTime} 毫秒, 写入速度: ${writeSpeedBytes.toFixed(2)} 字节/秒 (${writeSpeedMB.toFixed(2)} MB/s)\n`
+                    + `读取字节数: ${data.readBytes}, 读取时间: ${data.readTime} 毫秒, 读取速度: ${readSpeedBytes.toFixed(2)} 字节/秒 (${readSpeedMB.toFixed(2)} MB/s)`;
+                alert(message);
+            })
+            .catch(error => {
+                console.error('请求发生错误:', error);
+            });
+    });
+    document.getElementById('nameForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const nameText = document.getElementById('nameText').value;
+        var urltocall = "/nameText?nameText=" + nameText;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                alert("修改成功")
+            }
+        };
+        xmlhttp.open("GET", urltocall, false);
+        xmlhttp.send();
+    });
+    window.onload = nameText;
+</script>
+
+</html>

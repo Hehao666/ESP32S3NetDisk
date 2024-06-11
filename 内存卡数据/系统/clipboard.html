@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8DwQMAAFAbQIOMhQIiIAwQAAAABJRU5ErkJggg==" />
+    <link rel="stylesheet" href="../系统/CSS/style.css">
+    <title>剪切板</title>
+</head>
+<style>
+    .container {
+        width: 1000px;
+    }
+
+    .custom-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        transition: all 0.3s;
+        border-radius: 5px;
+    }
+
+    .custom-btn:hover {
+        transform: scale(1.1);
+        background-color: #0056b3;
+    }
+
+    #clipboardTextArea {
+        height: 80vh;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: rgba(255, 255, 255, 0.3);
+        border: 2px solid rgba(0, 123, 255, 0.5);
+        outline: none;
+        resize: none;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+        color: #000;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+    }
+
+    #clipboardTextArea:hover,
+    #clipboardTextArea:focus {
+        border-color: rgba(0, 123, 255, 0.8);
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+</style>
+
+<body>
+    <div class="container">
+        <button type="button" class="custom-btn" onclick="theCopy()">复制</button>
+        <button type="button" class="custom-btn" onclick="theSave()">保存</button>
+        <br><br />
+        <textarea id="clipboardTextArea" rows="10" cols="50"></textarea>
+        <div>
+</body>
+<script>
+    function storage() {
+        filename = "/配置/copy.txt";
+        var urltocall = "/modify?filename=" + filename;
+
+        fetch(urltocall)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络错误或文件不存在');
+                }
+                return response.text();
+            })
+            .then(textContent => {
+                clipboard(textContent);
+            })
+            .catch(error => {
+                alert("查看文件时出错: " + error.message);
+            });
+    }
+    function clipboard(data) {
+        document.getElementById('clipboardTextArea').value = data;
+    }
+    function theSave() {
+        var text = document.getElementById('clipboardTextArea').value;
+        var con = encodeURIComponent(text);
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/edittxt?txtpath=/copy.txt&con=" + con, true);
+        xmlhttp.send();
+        xmlhttp.onload = function (e) { alert(this.responseText); }
+    }
+    function theCopy() {
+        var textArea = document.getElementById('textArea');
+        textArea.select();
+        document.execCommand('copy');
+        alert('复制成功');
+    }
+    window.onload = storage;
+</script>
+
+</html>

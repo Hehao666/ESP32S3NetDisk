@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8DwQMAAFAbQIOMhQIiIAwQAAAABJRU5ErkJggg==" />
+    <link rel="stylesheet" href="../系统/CSS/style.css">
+    <title>网络配置</title>
+</head>
+<style>
+    .container {
+        width: 500px;
+        position: relative;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        max-height: 95vh;
+        overflow-y: auto;
+        scrollbar-width: none;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    .container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .container h2 {
+        color: #3498db;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .container input[type="submit"],
+    .container input[type="button"] {
+        width: auto;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .container input[type="submit"]:hover,
+    .container input[type="button"]:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .button-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .containeother {
+        width: 500px;
+        position: fixed;
+        top: 8px;
+        left: 50%;
+        position: absolute;
+        left: 550px;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .wifi-config h2 {
+        margin-bottom: 10px;
+        color: #3498db;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .containeother input[type="text"],
+    .containeother input[type="password"],
+    .containeother select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .containeother input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .containeother input[type="submit"]:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .containeother select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px 16px;
+        padding-right: 30px;
+    }
+
+    .wifi-config input[type="text"],
+    .wifi-config input[type="password"] {
+        margin-bottom: 15px;
+    }
+
+    .wifi-config input[type="text"],
+    .wifi-config input[type="password"] {
+        letter-spacing: 2px;
+    }
+
+    button,
+    input[type="submit"],
+    input[type="button"] {
+        padding: 5px 10px;
+        font-size: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover,
+    input[type="submit"]:hover,
+    input[type="button"]:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    button:hover,
+    input[type="submit"]:hover,
+    input[type="button"]:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #loader {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+        backdrop-filter: blur(2px);
+    }
+
+    .hotspot-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <form id="configWifi" action="/configWifi">
+            <div id="configsArea">
+            </div>
+            <div id="buttonsArea">
+                <input type="submit" value="保存所有配置" />
+                &nbsp;
+                <input type="button" value="增加自连wifi" onclick="addWifi();" />
+                &nbsp;
+                <input type="button" value="减少自连wifi" onclick="deduceWifi();" />
+            </div>
+        </form>
+        <h2>单WIFI最长连接时间（单位10ms）</h2>
+        <form id="configFile" action="/configFile">
+            <input id="wifiConnectTimeInput" name="wifiConnectTime" type="text" value="" class="hotspot-input"
+                onkeyup="value=value.replace(/[^0-9]/g, '')" required="required" maxlength="63"
+                placeholder="输入一个整数，如750" />
+            <br /><br />
+            <input type="submit" value="提交" />
+        </form>
+    </div>
+    <div class="containeother">
+        <h2>配置热点</h2>
+        <form id="configAP" action="/configAP">
+            <label for="hotspotName">热点名称：</label>
+            <input id="hotspotName" name="hotspotName" type="text" value="" required maxlength="63"
+                placeholder="请输入热点名称" />
+            <br />
+            <label for="hotspotPassword">热点密码：</label>
+            <input id="hotspotPassword" name="hotspotPassword" type="text" value=""
+                oninput="this.value = this.value.replace(/[^\w]/g, '').slice(0, 63);" required minlength="8"
+                placeholder="密码至少8位，非中文字符" />
+            <br />
+            <label for="channel">WIFI信道：</label>
+            <select id="channel" name="channel"></select>
+            <br />
+            <input type="submit" value="提交" />
+        </form>
+        <div style="display:none;" id="loader"></div>
+    </div>
+</body>
+<script>
+    function addWifi() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/addWifi", false);
+        xmlhttp.send();
+        if (xmlhttp.status == 200) storage();
+    } function deduceWifi() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/deduceWifi", false);
+        xmlhttp.send();
+        if (xmlhttp.status == 200) storage();
+    }
+    function storage() {
+        fetch('/get_wifi')
+            .then(response => response.json())
+            .then(data => {
+                generateWifiInputsWithData(data.wifilist);
+                fillWifiConnectTime(data.wifiConnectTime);
+                fillHotspotConfig(data);
+                generateChannelOptions(data.channel);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    function generateWifiInputsWithData(wifiDataList) {
+        const container = document.getElementById('configWifi');
+        const configsArea = document.getElementById('configsArea');
+
+        if (!container || !configsArea) {
+            console.error("Required containers not found in DOM.");
+            return;
+        }
+
+        while (configsArea.firstChild) {
+            configsArea.removeChild(configsArea.firstChild);
+        }
+
+        let counter = 1;
+        const existingWifiNames = new Set(Array.from(container.querySelectorAll('.wifi-config'))
+            .map(div => div.querySelector('input[name^="WifiName"]').value));
+
+        for (const wifiData of wifiDataList) {
+            if (!existingWifiNames.has(wifiData.wifiname)) {
+                const configDiv = document.createElement('div');
+                configDiv.className = 'wifi-config';
+                configDiv.innerHTML = `
+                <h2>开机自连第${counter}WIFI</h2>
+                <label for="wifiName">Wi-Fi名称：</label><input type="text" name="WifiName${counter}" value="${wifiData.wifiname}" class="hotspot-input" required maxlength="63" autocomplete="current-password"><br />
+                <label for="wifiPassword">Wi-Fi密码：</label><input type="password" name="WifiPassword${counter}" value="${wifiData.wifipass}" class="hotspot-input" required maxlength="63" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5]/ig,'');"autocomplete="current-password"><br />
+            `;
+
+                configsArea.appendChild(configDiv);
+
+                existingWifiNames.add(wifiData.wifiname);
+                counter++;
+            }
+        }
+    }
+    function fillWifiConnectTime(time) {
+        const connectTimeInput = document.getElementById('wifiConnectTimeInput');
+        connectTimeInput.value = time;
+    }
+    function fillHotspotConfig(data) {
+        const hotspotSsidInput = document.getElementById('hotspotName');
+        const hotspotPasswordInput = document.getElementById('hotspotPassword');
+        const channelInput = document.getElementById('channel');
+
+        hotspotSsidInput.value = data.ssid;
+        hotspotPasswordInput.value = data.password;
+        channelInput.value = data.channel;
+        generateChannelOptions(data.channel);
+    }
+    function generateChannelOptions(channelValue) {
+        const channelSelect = document.getElementById('channel');
+        channelSelect.innerHTML = '';
+
+        for (let i = 1; i <= 13; i++) {
+            const option = document.createElement('option'); option.value = i;
+            option.text = i.toString(); if (i === parseInt(channelValue)) {
+                option.selected = true;
+            } channelSelect.appendChild(option);
+        }
+    }
+    function submitConfig(event) {
+        event.preventDefault();
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert('WIFI配置保存成功');
+            }
+        };
+        xmlhttp.open("GET", event.target.action + "?" + new URLSearchParams(new FormData(event.target)).toString(), true);
+        xmlhttp.send();
+    }
+
+    function submitConfigAP(event) {
+        event.preventDefault();
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert('热点配置保存成功');
+            }
+        };
+        xmlhttp.open("GET", event.target.action + "?" + new URLSearchParams(new FormData(event.target)).toString(), true);
+        xmlhttp.send();
+    }
+    function submitConfigFile(event) {
+        event.preventDefault();
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert('最长链接时长保存成功');
+            }
+        };
+        xmlhttp.open("GET", event.target.action + "?" + new URLSearchParams(new FormData(event.target)).toString(), true);
+        xmlhttp.send();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('configWifi').addEventListener('submit', submitConfig);
+        document.getElementById('configAP').addEventListener('submit', submitConfigAP);
+        document.getElementById('configFile').addEventListener('submit', submitConfigFile);
+    });
+    window.onload = storage;
+</script>
+
+</html>

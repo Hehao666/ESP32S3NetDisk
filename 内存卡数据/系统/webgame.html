@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+  <link rel="icon" type="image/png"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8DwQMAAFAbQIOMhQIiIAwQAAAABJRU5ErkJggg==" />
+  <link rel="stylesheet" href="../系统/CSS/style.css">
+
+  <title>网页游戏</title>
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+
+  .container {
+    width: 300px;
+  }
+
+  .right-content {
+    width: 300px;
+    overflow-y: auto;
+    margin: 0px auto 0 150px;
+  }
+
+  .right-content a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .container p {
+    margin: 16px 0;
+    line-height: 1.5;
+  }
+
+  .container a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .container a:hover {
+    color: #0056b3;
+  }
+
+  .container a:before {
+    font-family: "icomoon", sans-serif;
+    content: "\e916";
+    margin-right: 8px;
+    font-weight: 900;
+  }
+
+  .game-list-container {
+    height: 750px;
+    overflow-y: auto;
+    margin-top: 20px;
+  }
+
+  .game-list-container p {
+    margin: 16px 0;
+    line-height: 1.5;
+  }
+
+  .game-list-container a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .game-list-container a:hover {
+    color: #0056b3;
+  }
+
+  .game-list-container a:before {
+    font-family: "icomoon", sans-serif;
+    content: "\e916";
+    margin-right: 8px;
+    font-weight: 900;
+  }
+
+  .game-list-container::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .game-list-container::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0, 0.1);
+  }
+
+  .game-list-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+  }
+
+  .game-list-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+
+  .game-and-right-wrap {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .right-content {
+    position: static;
+    width: 300px;
+  }
+
+  .game-and-right-container {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .right-content::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .sticky-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -60px;
+    z-index: 1;
+  }
+
+  .game-list-container,
+  .right-content {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .game-list-container::-webkit-scrollbar,
+  .right-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .game-size {
+    font-size: 0.9em;
+    color: #666;
+    margin-left: 5px;
+    display: inline;
+  }
+
+  .game-list-container p,
+  .right-content p {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+  }
+
+  a {
+    position: relative;
+    color: rgb(85, 83, 83);
+    font-size: 14px;
+    display: flex;
+    width: 300px;
+    padding: 10px;
+  }
+</style>
+
+<body>
+  <div class="game-and-right-wrap">
+    <div class="game-list-container">
+      <div class="container">
+        <H2 class="sticky-header">HTML</H2>
+        <p><a href="../游戏/liferestart/public/index.html">人生重开模拟器</a></p>
+        <p><a href="../游戏/bullseye-game/dist/index.html">射箭</a></p>
+        <p><a href="../游戏/color-blast/dist/index.html">彩色子弹</a></p>
+        <p><a href="../游戏/flipcard-memory-game/dist/index.html">记忆大师</a></p>
+        <p><a href="../游戏/menja/dist/index.html">切箱子</a></p>
+        <p><a href="../游戏/tower-blocks/dist/index.html">堆高高</a></p>
+        <p><a href="../游戏/vanilla-js-snake/dist/index.html">贪吃蛇</a></p>
+        <p><a href="../游戏/magicube/index.html">魔方</a></p>
+      </div>
+    </div>
+    <div class="game-list-container">
+      <div class="right-content">
+        <H2 class="sticky-header">Flash</H2>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  function storage() {
+    fetch('/gamelist')
+      .then(response => response.json())
+      .then(data => {
+        populateGameList(data.games);
+      })
+      .catch(error => console.error('Error:', error));
+  }
+  function populateGameList(games) {
+    const rightContent = document.querySelector('.right-content');
+    games.forEach(game => {
+      const listItem = document.createElement('p');
+      const linkWrapper = document.createElement('div');
+      const link = document.createElement('a');
+      const fileSizeSpan = document.createElement('span');
+
+      link.href = game.gamepath;
+      link.textContent = game.gamepath.split('/').pop().replace('.swf', '');
+
+      fileSizeSpan.textContent = ` (${bytesToSize(game.filesize)})`;
+
+      link.appendChild(fileSizeSpan);
+      linkWrapper.appendChild(link);
+      listItem.appendChild(linkWrapper);
+
+      rightContent.appendChild(listItem);
+    });
+  }
+  function bytesToSize(bytes) {
+    var sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    if (bytes == 0) return '0 B';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    var size = bytes / Math.pow(1024, i);
+    if (sizes[i] !== 'B') {
+      size = size.toFixed(2);
+    }
+    return size + ' ' + sizes[i];
+  }
+  window.onload = storage;
+</script>
+
+</html>

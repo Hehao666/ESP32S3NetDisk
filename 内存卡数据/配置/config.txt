@@ -1,0 +1,4 @@
+autoWifinum=1
+wifiConnectTime=500
+hostName=esp32
+FirstWebis=1
