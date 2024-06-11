@@ -13,15 +13,11 @@
 
 # 相关链接：
 
-哔哩哔哩视频：https://www.bilibili.com/video/BV1Pw4m1X751/?share_source=copy_web&vd_source=56efb7e45102ec59491d4ff5ddfdc196
+哔哩哔哩视频：https://www.bilibili.com/video/BV1FJ4m137nA/
 
-哔哩哔哩视频（进阶介绍）：https://www.bilibili.com/video/BV1Aw4m1X7CM/?share_source=copy_web&vd_source=56efb7e45102ec59491d4ff5ddfdc196
+立创开源广场：https://oshwhub.com/haha233.jpg/esp32-pian-xie-sd-tf-ka-fu-wu-qi_copy_copy_copy
 
-哔哩哔哩视频（1.3.0版本）：https://www.bilibili.com/video/BV1Vi421S7QR/?share_source=copy_web&vd_source=56efb7e45102ec59491d4ff5ddfdc196
-
-立创开源广场：https://oshwhub.com/haha233.jpg/backupprojects_haha233-jpg_personal_0_20240427
-
-gitee项目地址（自动同步github）：https://gitee.com/haha233jpg/esp32-sdcard
+gitee项目地址（自动同步github）：https://gitee.com/haha233jpg/ESP32S3NetDisk
 
 # 个人博客：
 
@@ -36,7 +32,6 @@ arduino的esp32版本为3.0.0
 ~~~
 autoWifinum=1
 wifiConnectTime=500
-CPUFfrequency=80
 hostName=esp32
 FirstWebis=1
 ~~~
