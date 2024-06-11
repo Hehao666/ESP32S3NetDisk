@@ -3,7 +3,7 @@
 
 作者：B站 哈哈233jpg
 
-项目实现文件管理、开机自连WIFI、设置（含OTA,域名前缀修改）、网页flash游戏和html游戏、播放视频、模式转换（AP STA AP+STA互相转换）、剪切板功能
+项目实现文件管理、开机自连WIFI、设置、网页游戏、播放视频、模式转换、剪切板功能
 
 成品尺寸:4\*3(3.1)\*1.18cm。
 
@@ -17,7 +17,6 @@
 
 立创开源广场：https://oshwhub.com/haha233.jpg/esp32-pian-xie-sd-tf-ka-fu-wu-qi_copy_copy_copy
 
-gitee项目地址（自动同步github）：https://gitee.com/haha233jpg/ESP32S3NetDisk
 
 # 个人博客：
 
