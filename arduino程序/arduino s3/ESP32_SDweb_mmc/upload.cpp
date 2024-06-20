@@ -15,6 +15,7 @@ extern const char *host;
 extern long long totalstorage;
 extern long long storage;
 extern String IPAD;
+extern String ssid;
 extern char *wifissid;
 
 void Storage() {
@@ -161,8 +162,18 @@ void modify() {
   modifyfile(filename.c_str());
 }
 void setversion() {
-  IPAD = WiFi.localIP().toString();
-  String json = "{\"version\": \"" + String(VERSION) + "\",\"text\": \"" + String(host) + "\",\"FirstWebis\": \"" + String(FirstWebis) + "\",\"IPAD\": \"" + String(IPAD) + "\",\"WIFI\": \"" + String(wifissid) + "\"}";
+  // 判断当前工作模式
+  uint8_t wifiMode = WiFi.getMode();
+  String SSID;
+  if (wifiMode & WIFI_STA) {
+    IPAD = WiFi.localIP().toString();
+    SSID = String(wifissid);
+  }
+  else{
+    SSID = ssid;
+  }
+
+  String json = "{\"version\": \"" + String(VERSION) + "\",\"text\": \"" + String(host) + "\",\"FirstWebis\": \"" + String(FirstWebis) + "\",\"IPAD\": \"" + String(IPAD) + "\",\"WIFI\": \"" + SSID + "\"}";
   esp32_server.send(200, "application/json", json);
   Serial.println(json);
 }

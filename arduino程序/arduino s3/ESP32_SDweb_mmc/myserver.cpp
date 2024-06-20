@@ -305,7 +305,6 @@ void readConfig(fs::FS &fs){
         strcpy(hostBuffer, value.c_str()); 
         host=hostBuffer;
         Serial.println(host);
-        //Serial.println(hostBuffer);
         }    
       else if(key == "FirstWebis") {
         FirstWebis = value.toInt();
@@ -320,7 +319,7 @@ void readConfig(fs::FS &fs){
 void server_wifista(){
   int i=0;
   WiFi.mode(WIFI_STA);
-  //WiFi.setTxPower(WIFI_POWER_19_5dBm);
+  WiFi.setTxPower(WIFI_POWER_19_5dBm);
   for(int j=0;j<wifiNum;j++)
   {
     Serial.println(wifiSsid[j]);

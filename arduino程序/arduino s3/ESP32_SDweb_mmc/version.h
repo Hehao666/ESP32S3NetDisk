@@ -1,1 +1,1 @@
-#define VERSION "HaOs1.3.10"
+#define VERSION "HaOs1.3.11"
